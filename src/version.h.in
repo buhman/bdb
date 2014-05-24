@@ -1,0 +1,5 @@
+#pragma once
+
+//#define BDB_VERSION @BDB_VERSION@
+
+#define BDB_FORMAT_VERSION @BDB_FORMAT_VERSION@
