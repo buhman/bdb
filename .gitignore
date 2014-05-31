@@ -38,6 +38,7 @@ config.h.in
 config.log
 config.status
 config.sub
+config.cache
 db
 libtool
 libltdl
