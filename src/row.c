@@ -2,6 +2,7 @@
 #include "config.h"
 #endif
 
+#include <sys/mman.h>
 #include <string.h>
 
 #include "row.h"
@@ -50,6 +51,8 @@ bdb_row_push(const uint8_t tag_i, const void *buf, const uint64_t size, bdb_t *b
 
     D(&row, bdb);
   } /* ... */
+
+  msync(bdb->buf, bdb->size, MS_ASYNC);
 
   return 0;
 }
