@@ -22,8 +22,10 @@ bdb_tag_find(const char *name, bdb_t *bdb)
 
     tag = (bdb_tag_t*)((char*)bdb->buf + h->tag[i]);
     n = ((char*)bdb->buf + tag->name);
-    if (strcmp(name, n) == 0)
+    if (strcmp(name, n) == 0) {
+      D(&h, bdb);
       return i;
+    }
   }
 
   D(&h, bdb);
