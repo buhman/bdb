@@ -11,7 +11,7 @@ main(int argc, const char **argv)
 {
   int err, tag;
   bdb_t *bdb;
-  uint64_t next;
+  uint64_t next, buf_o;
   char *buf;
 
   if (argc < 3) {
@@ -36,7 +36,9 @@ main(int argc, const char **argv)
 
   next = (uint64_t)-1;
 
-  while ((buf = bdb_row_iter(tag, &next, bdb)) != NULL) {
+  while ((buf_o = bdb_row_iter(tag, &next, bdb)) != (uint64_t)-1) {
+
+    buf = R(buf_o, bdb);
 
     fprintf(stderr, "%s\n", buf);
 

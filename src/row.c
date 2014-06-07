@@ -105,17 +105,16 @@ bdb_row_push(const uint8_t tag_i, const void *buf, const uint64_t size, bdb_t *b
   return 0;
 }
 
-void *
+uint64_t
 bdb_row_iter(const uint8_t tag_i, uint64_t *next, bdb_t *bdb)
 {
   bdb_header_t *h;
   bdb_row_t *row;
-  uint64_t tag_o;
+  uint64_t tag_o, buf_o;
   bdb_tag_t *tag;
-  void *buf;
 
   if (*next == 0)
-    return NULL;
+    return (uint64_t)-1;
 
   if (*next == (uint64_t)-1) {
 
@@ -130,8 +129,8 @@ bdb_row_iter(const uint8_t tag_i, uint64_t *next, bdb_t *bdb)
 
   row = R(*next, bdb);
   *next = row->next;
-  buf = R(row->buf, bdb);
+  buf_o = row->buf;
   D(&row, bdb);
 
-  return buf;
+  return buf_o;
 }

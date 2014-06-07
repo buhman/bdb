@@ -10,7 +10,7 @@ START_TEST (bdb_check_row_push)
 {
   bdb_t *bdb;
   int tag, i, err;
-  uint64_t next;
+  uint64_t next, buf_o;
   char *buf;
 
   BDB_SETUP("row.bdb");
@@ -29,7 +29,9 @@ START_TEST (bdb_check_row_push)
     i = 0;
     next = (uint64_t)-1;
 
-    while ((buf = bdb_row_iter(tag, &next, bdb)) != NULL) {
+    while ((buf_o = bdb_row_iter(tag, &next, bdb)) != (uint64_t)-1) {
+
+      buf = R(buf_o, bdb);
 
       if (i == 0)
         fail_unless(strcmp(buf, "fooasdf") == 0);
