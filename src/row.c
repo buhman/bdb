@@ -68,7 +68,7 @@ bdb_row_push(const uint8_t tag_i, const void *buf, const uint64_t size, bdb_t *b
     if (!row_o)
       return -1;
 
-    if (size == (uint64_t)-1) {
+    if (size != (uint64_t)-1) {
       buf_o = bdb_malloc(size, bdb);
       if (!buf_o)
         return -1;
@@ -78,7 +78,7 @@ bdb_row_push(const uint8_t tag_i, const void *buf, const uint64_t size, bdb_t *b
   } /* ... */
 
   {
-    if (size == (uint64_t)-1) {
+    if (size != (uint64_t)-1) {
       dbuf = R(buf_o, bdb);
       memcpy(dbuf, buf, size);
       D(&dbuf, bdb);
