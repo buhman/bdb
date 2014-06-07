@@ -41,7 +41,7 @@ bdb_row_push_str(const uint8_t tag_i, bdb_t *bdb, int nbuf, const char *buf, ...
 
     str_a = R(str_o, bdb);
     *(str_a + count) = off;
-    D(str_a, bdb);
+    D(&str_a, bdb);
 
     buf = va_arg(ap, const char*);
     count++;
