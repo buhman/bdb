@@ -4,10 +4,49 @@
 
 #include <sys/mman.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "row.h"
 #include "util.h"
 #include "malloc.h"
+
+int
+bdb_row_push_str(const uint8_t tag_i, bdb_t *bdb, int nbuf, const char *buf, ...)
+{
+  uint64_t off, *str_a, str_o;
+  char *bbuf;
+  va_list ap;
+
+  long long count = 0;
+
+  va_start(ap, buf);
+
+  str_o = bdb_malloc(sizeof(uint64_t) * nbuf, bdb);
+  if (!str_o)
+    return -1;
+
+  while (count < nbuf) {
+
+    off = bdb_malloc(strlen(buf) + 1, bdb);
+    if (!off)
+      return -1;
+
+    bbuf = R(off, bdb);
+    strcpy(bbuf, buf);
+    D(&bbuf, bdb);
+
+    str_a = R(str_o, bdb);
+    *(str_a + count) = off;
+    D(str_a, bdb);
+
+    buf = va_arg(ap, const char*);
+    count++;
+  }
+
+  va_end(ap);
+
+  return bdb_row_push(tag_i, (void*)str_o, (uint64_t)-1, bdb);
+}
 
 int
 bdb_row_push(const uint8_t tag_i, const void *buf, const uint64_t size, bdb_t *bdb)
@@ -29,16 +68,21 @@ bdb_row_push(const uint8_t tag_i, const void *buf, const uint64_t size, bdb_t *b
     if (!row_o)
       return -1;
 
-    buf_o = bdb_malloc(size, bdb);
-    if (!buf_o)
-      return -1;
-
+    if (size == (uint64_t)-1) {
+      buf_o = bdb_malloc(size, bdb);
+      if (!buf_o)
+        return -1;
+    }
+    else
+      buf_o = (uint64_t)buf;
   } /* ... */
 
   {
-    dbuf = R(buf_o, bdb);
-    memcpy(dbuf, buf, size);
-    D(&dbuf, bdb);
+    if (size == (uint64_t)-1) {
+      dbuf = R(buf_o, bdb);
+      memcpy(dbuf, buf, size);
+      D(&dbuf, bdb);
+    }
 
     row = R(row_o, bdb);
     row->size = size;
