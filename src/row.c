@@ -27,13 +27,17 @@ bdb_row_push_str(const uint8_t tag_i, bdb_t *bdb, int nbuf, const char *buf, ...
 
   while (count < nbuf) {
 
-    off = bdb_malloc(strlen(buf) + 1, bdb);
-    if (!off)
-      return -1;
+    if (buf) {
+      off = bdb_malloc(strlen(buf) + 1, bdb);
+      if (!off)
+        return -1;
 
-    bbuf = R(off, bdb);
-    strcpy(bbuf, buf);
-    D(&bbuf, bdb);
+      bbuf = R(off, bdb);
+      strcpy(bbuf, buf);
+      D(&bbuf, bdb);
+    }
+    else
+      off = (uint64_t)-1;
 
     str_a = R(str_o, bdb);
     *(str_a + count) = off;
