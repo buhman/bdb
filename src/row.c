@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 #include <string.h>
 #include <stdarg.h>
+#include <signal.h>
 
 #include "row.h"
 #include "util.h"
@@ -113,9 +114,6 @@ bdb_row_iter(const uint8_t tag_i, uint64_t *next, bdb_t *bdb)
   uint64_t tag_o, buf_o;
   bdb_tag_t *tag;
 
-  if (*next == 0)
-    return (uint64_t)-1;
-
   if (*next == (uint64_t)-1) {
 
     h = R(0, bdb);
@@ -126,6 +124,9 @@ bdb_row_iter(const uint8_t tag_i, uint64_t *next, bdb_t *bdb)
     *next = tag->row;
     D(&tag, bdb);
   }
+
+  if (*next == 0)
+    return (uint64_t)-1;
 
   row = R(*next, bdb);
   *next = row->next;
