@@ -52,6 +52,7 @@ LT_INIT([dlopen disable-static])
 #### environment ####
 
 AC_HEADER_STDC
+AX_PTHREAD
 
 # unit tests
 

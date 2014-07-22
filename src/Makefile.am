@@ -1,4 +1,5 @@
-AM_CFLAGS = -pthread
+AM_CFLAGS = $(PTHREAD_CFLAGS)
+LIBS = $(PTHREAD_LIBS)
 
 EXTRA_DIST = \
 	version.h.in
